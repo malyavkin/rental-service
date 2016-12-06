@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Home</title>
+{% endblock %}
+{% block navbar-left %}
+    <span class="breadcrumbs">
+        <a href="{% url 'home' %}" class="breadcrumb">DocXTools</a>
+    </span>
+{% endblock %}
+{% block body %}
+    <div class="container" style="position:relative">
+
+        <ul class="collection with-header z-depth-1 paper-under-header">
+            <li class="collection-header"><h4>DocXTools</h4></li>
+            <li class="collection-item"><a href="{% url 'contracts' %}">Договоры</a></li>
+            <li class="collection-item"><a href="#">Автомобили (Х)</a></li>
+            <li class="collection-item"><a href="{% url 'rate_calc' %}">Калькулятор тарифов</a></li>
+        </ul>
+    </div>
+{% endblock %}

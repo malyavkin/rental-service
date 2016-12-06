@@ -1,0 +1,503 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block head %}
+<title>New Contract</title>
+{% endblock %}
+{% block navbar-left %}
+<a href="{% url 'home' %}" class="breadcrumb">DocXTools</a>
+<a href="{% url 'contracts' %}" class="breadcrumb">Договоры</a>
+<a href="{% url 'new_contract' %}" class="breadcrumb">Новый договор</a>
+{% endblock %}
+{% block body %}
+<div class="container">
+  <div class="row section">
+    <div class="col s12 m8 l6">
+      {% if form.errors %}
+      {% for field in form%}
+      {% if field.errors %}
+      <p> {{ field.label }}</p>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="row section">
+    <form method="post" class="section col s12 m9 l10" action="{% url 'new_contract' %}">
+      {% csrf_token %}
+      <div id="general" class="row scrollspy">
+        <h3 class="col s12 header">Основная информация</h3>
+        <div class="input-field col s12 m12 l4">
+                        <span class="inline tooltipped"
+                              data-position="bottom"
+                              data-delay="50"
+                              data-tooltip="Номер присваивается автоматически при сохранении"
+                              style="display:block;">
+                            <label for="preview_contract_id">Договор аренды №</label>
+                            <input class="inline tooltipped"
+                                   disabled
+                                   type="text"
+                                   id="preview_contract_id"
+                                   value="{{user.representative.company.org_prefix}}&nbsp;&mdash;&nbsp;{{default_name}}&nbsp;&mdash;&nbsp;###"/>
+                        </span>
+          <input type="text"
+                 name="{{form.contract_middle_name.name}}"
+                 value="{{form.contract_middle_name.value}}"
+                 hidden>
+        </div>
+        <div class="input-field col s12 m6 l4">
+          {{form.contract_booking_number.label_tag}}
+          {{form.contract_booking_number}}
+        </div>
+        <div class="input-field col s12 m6 l4">
+          <input type="date"
+                 class="datepicker"
+                 name="{{form.contract_date.name}}"
+                 value="{{form.contract_date.value}}"
+                 required>
+          {{form.contract_date.label_tag}}
+        </div>
+        <div class="input-field col s12 m4 l4">
+          <select name="{{form.car.name}}">
+            {% if form.car.value %}
+            <option value="" disabled>Choose your option</option>
+            {% else %}
+            <option value="" disabled selected>Choose your option</option>
+            {% endif %}
+            {% for choice in form.car.field.queryset %}
+              {% if choice.pk == form.car.value|add:"0" %}
+              <option value="{{ choice.pk }}" selected>{{ choice.str_with_class }}</option>
+              {% else %}
+              <option value="{{ choice.pk }}">{{ choice.str_with_class }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          <label>{{form.car.label}}</label>
+        </div>
+        <div class="input-field col s12 m4 l4">
+          <select name="{{form.booked_class.name}}" id="{{form.booked_class.name}}">
+            {% if form.booked_class.value %}
+            <option value="" disabled>Choose your option</option>
+            {% else %}
+            <option value="" disabled selected>Choose your option</option>
+            {% endif %}
+            {% for choice in form.booked_class.field.queryset %}
+              {% if choice.pk == form.booked_class.value|add:"0" %}
+              <option value="{{ choice.pk }}" selected>{{ choice }}</option>
+              {% else %}
+              <option value="{{ choice.pk }}">{{ choice }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          <label>{{form.booked_class.label}}</label>
+        </div>
+        <div class="input-field col s12 m4 l4">
+          {{form.car_current_volume.label_tag}}
+          {{form.car_current_volume}}
+        </div>
+        <div class="col s12">
+          <div class="row">
+            <div class="col input-field s12 m6 l8">
+              {{form.delivery_address.label_tag}}
+              {{form.delivery_address}}
+            </div>
+            <div class="col input-field s12 m6 l4">
+              <!-- Dropdown Trigger -->
+              <div class='dropdown-button btn'
+                   data-constrainwidth="false"
+                   data-alignment="right"
+                   data-activates='dropdown1'>Выбрать адрес
+              </div>
+              <!-- Dropdown Structure -->
+              <ul id='dropdown1'
+                  class='dropdown-content'
+                  data-copy-selected="{{form.delivery_address.name}}">
+                {% for delivery_addr in delivery_addresses %}
+                <li data-value="{{delivery_addr}}"><span>{{delivery_addr}}</span></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col s12">
+          <div class="row">
+            <div class="col input-field s12 m6 l8">
+              {{form.area_of_operation.label_tag}}
+              {{form.area_of_operation}}
+            </div>
+            <div class="col input-field s12 m6 l4">
+              <!-- Dropdown Trigger -->
+              <div class='dropdown-button btn'
+                   data-constrainwidth="false"
+                   data-alignment="right"
+                   data-activates='dropdown2'>Выбрать адрес
+              </div>
+              <!-- Dropdown Structure -->
+              <ul id='dropdown2'
+                  class='dropdown-content'
+                  data-copy-selected="{{form.area_of_operation.name}}">
+                <li data-value="Крым"><span>Крым</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="input-field col s12 ">
+          {{form.return_address.label_tag}}
+          {{form.return_address}}
+        </div>
+        <div class="col s12 m12 l6">
+          <div class="row">
+            <div class="input-field col s8">
+              <input type="date"
+                     class="datepicker"
+                     name="{{form.rent_start_date.name}}"
+                     value="{{form.rent_start_date.value}}">
+              {{form.rent_start_date.label_tag}}
+            </div>
+            <div class="input-field col s4">
+              <select name="{{form.rent_start_time.name}}">
+                {% if form.rent_start_time.value %}
+                <option value="" disabled>Время</option>
+                {% else %}
+                <option value="" disabled selected>Время</option>
+                {% endif %}
+                {% for time in times %}
+                {% if time == form.rent_start_time.value %}
+                <option value="{{ time }}" selected>{{ time }}</option>
+                {% else %}
+                <option value="{{ time }}">{{ time }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+              <label>{{form.rent_start_time.label}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m12 l6">
+          <div class="row">
+            <div class="input-field col s8">
+              <input type="date"
+                     class="datepicker"
+                     name="{{form.rent_end_date.name}}"
+                     value="{{form.rent_end_date.value}}">
+              {{form.rent_end_date.label_tag}}
+            </div>
+            <div class="input-field col s4">
+              <select name="{{form.rent_end_time.name}}">
+                {% if form.rent_end_time.value %}
+                <option value="" disabled>Время</option>
+                {% else %}
+                <option value="" disabled selected>Время</option>
+                {% endif %}
+                {% for time in times %}
+                {% if time == form.rent_end_time.value %}
+                <option value="{{ time }}" selected>{{ time }}</option>
+                {% else %}
+                <option value="{{ time }}">{{ time }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+              <label>{{form.rent_end_time.label}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tenant" class="row scrollspy">
+        <h3 class="col s12 header">Данные об арендаторе</h3>
+        <div class="input-field col s12 m12 l4">
+          {{form.tenant_last_name.label_tag}}
+          {{form.tenant_last_name}}
+        </div>
+        <div class="input-field col s12 m12 l4">
+          {{form.tenant_first_name.label_tag}}
+          {{form.tenant_first_name}}
+        </div>
+        <div class="input-field col s12 m12 l4">
+          {{form.tenant_middle_name.label_tag}}
+          {{form.tenant_middle_name}}
+        </div>
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s8">
+              {{form.flight_no}}
+              {{form.flight_no.label_tag}}
+            </div>
+            <div class="input-field col s4">
+              <select name="{{form.arrive_time.name}}">
+                {% if form.arrive_time.value %}
+                <option value="" disabled>{{form.arrive_time.label}}</option>
+                {% else %}
+                <option value="" disabled selected>{{form.arrive_time.label}}</option>
+                {% endif %}
+                {% for time in times %}
+                {% if time == form.arrive_time.value %}
+                <option value="{{ time }}" selected>{{ time }}</option>
+                {% else %}
+                <option value="{{ time }}">{{ time }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+              <label>{{form.arrive_time.label}}</label>
+            </div>
+          </div>
+        </div>
+        <h6 class="col s12 header">Паспортные данные</h6>
+        <div class="input-field col s4">
+          {{form.tenant_passport_part}}
+          {{form.tenant_passport_part.label_tag}}
+        </div>
+        <div class="input-field col s8">
+          {{form.tenant_passport_number}}
+          {{form.tenant_passport_number.label_tag}}
+        </div>
+        <div class="input-field col s12">
+          {{form.tenant_passport_issued}}
+          {{form.tenant_passport_issued.label_tag}}
+        </div>
+        <div class="input-field col s12 m4 l4">
+          <input type="date"
+                 class="aged_datepicker"
+                 name="{{form.birth_date.name}}"
+                 value="{{form.birth_date.value}}">
+          {{form.birth_date.label_tag}}
+        </div>
+        <div class="col s12 m8 l8">
+          <div class="row">
+            <div class="col input-field s12 m6 l6">
+              {{form.citizenship.label_tag}}
+              {{form.citizenship}}
+            </div>
+            <div class="col input-field s12 m6 l6">
+              <!-- Dropdown Trigger -->
+              <div class='dropdown-button btn'
+                   data-constrainwidth="true"
+                   data-alignment="right"
+                   data-activates='dropdown_citizenship'>Выбрать
+              </div>
+              <!-- Dropdown Structure -->
+              <ul id='dropdown_citizenship'
+                  class='dropdown-content'
+                  data-copy-selected="{{form.citizenship.name}}">
+
+                <li data-value="Россия"><span>Россия</span></li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="input-field col s12">
+          {{form.tenant_registration_address}}
+          {{form.tenant_registration_address.label_tag}}
+        </div>
+        <div class="input-field col s12">
+          {{form.tenant_residential_address}}
+          {{form.tenant_residential_address.label_tag}}
+        </div>
+        <h6 class="col s12 header">Контактная информация</h6>
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12 m6 l4">
+              {{form.tenant_phone_no_contact}}
+              {{form.tenant_phone_no_contact.label_tag}}
+            </div>
+            <div class="input-field col s12 m6 l4">
+              {{form.tenant_phone_no_working}}
+              {{form.tenant_phone_no_working.label_tag}}
+            </div>
+            <div class="input-field col s12 m6 l4">
+              {{form.email}}
+              {{form.email.label_tag}}
+            </div>
+          </div>
+        </div>
+        <h6 class="col s12 header">Водительское удостоверение</h6>
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12 m6 l4">
+              {{form.tenant_driver_license_no}}
+              {{form.tenant_driver_license_no.label_tag}}
+            </div>
+            <div class="input-field col s12 m6 l8">
+              {{form.tenant_driver_license_issued}}
+              {{form.tenant_driver_license_issued.label_tag}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="second-driver" class="row scrollspy">
+        <h3 class="col s12 header">Второй водитель</h3>
+        <div class="input-field col s12 m12 l4">
+          {{form.driver2_last_name.label_tag}}
+          {{form.driver2_last_name}}
+        </div>
+        <div class="input-field col s12 m12 l4">
+          {{form.driver2_first_name.label_tag}}
+          {{form.driver2_first_name}}
+        </div>
+        <div class="input-field col s12 m12 l4">
+          {{form.driver2_middle_name.label_tag}}
+          {{form.driver2_middle_name}}
+        </div>
+        <h6 class="col s12 header">Паспортные данные</h6>
+        <div class="input-field col s4">
+          {{form.driver2_passport_part}}
+          {{form.driver2_passport_part.label_tag}}
+        </div>
+        <div class="input-field col s8">
+          {{form.driver2_passport_number}}
+          {{form.driver2_passport_number.label_tag}}
+        </div>
+        <div class="input-field col s12">
+          {{form.driver2_passport_issued}}
+          {{form.driver2_passport_issued.label_tag}}
+        </div>
+        <h6 class="col s12 header">Водительское удостоверение</h6>
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12 m6 l4">
+              {{form.driver2_driver_license_no}}
+              {{form.driver2_driver_license_no.label_tag}}
+            </div>
+            <div class="input-field col s12 m6 l8">
+              {{form.driver2_driver_license_issued}}
+              {{form.driver2_driver_license_issued.label_tag}}
+            </div>
+          </div>
+        </div>
+        <h6 class="col s12 header">Контактная информация</h6>
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12 m6 l8">
+              {{form.driver2_registration_address}}
+              {{form.driver2_registration_address.label_tag}}
+            </div>
+            <div class="input-field col s12 m6 l4">
+              {{form.driver2_phone_no_contact}}
+              {{form.driver2_phone_no_contact.label_tag}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="third-driver" class="row scrollspy">
+        <h3 class="col s12 header">Третий водитель</h3>
+
+        <div class="input-field col s12 m12 l4">
+          {{form.driver3_last_name.label_tag}}
+          {{form.driver3_last_name}}
+        </div>
+        <div class="input-field col s12 m12 l4">
+          {{form.driver3_first_name.label_tag}}
+          {{form.driver3_first_name}}
+        </div>
+        <div class="input-field col s12 m12 l4">
+          {{form.driver3_middle_name.label_tag}}
+          {{form.driver3_middle_name}}
+        </div>
+        <h6 class="col s12 header">Паспортные данные</h6>
+        <div class="input-field col s4">
+          {{form.driver3_passport_part}}
+          {{form.driver3_passport_part.label_tag}}
+        </div>
+        <div class="input-field col s8">
+          {{form.driver3_passport_number}}
+          {{form.driver3_passport_number.label_tag}}
+        </div>
+        <div class="input-field col s12">
+          {{form.driver3_passport_issued}}
+          {{form.driver3_passport_issued.label_tag}}
+        </div>
+        <h6 class="col s12 header">Водительское удостоверение</h6>
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12 m6 l4">
+              {{form.driver3_driver_license_no}}
+              {{form.driver3_driver_license_no.label_tag}}
+            </div>
+            <div class="input-field col s12 m6 l8">
+              {{form.driver3_driver_license_issued}}
+              {{form.driver3_driver_license_issued.label_tag}}
+            </div>
+          </div>
+        </div>
+        <h6 class="col s12 header">Контактная информация</h6>
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12 m6 l8">
+              {{form.driver3_registration_address}}
+              {{form.driver3_registration_address.label_tag}}
+            </div>
+            <div class="input-field col s12 m6 l4">
+              {{form.driver3_phone_no_contact}}
+              {{form.driver3_phone_no_contact.label_tag}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="rate" class="row scrollspy">
+        <h3>Тариф</h3>
+        <div class="col s6 m4 l4">
+          <p>Подразделение</p>
+          <p>Дата бронирования</p>
+          <p>Длительность</p>
+          <p>Класс автомобиля</p>
+          <p>Гражданство</p>
+        </div>
+        <div class="col s6 m8 l8">
+          <p>Подразделение</p>
+          <p>Дата бронирования</p>
+          <p>Длительность</p>
+          <p>Класс автомобиля</p>
+          <p>Гражданство</p>
+        </div>
+        <div class="col s12">
+          <button type=button class="waves-effect waves-light btn"><i class="material-icons left">search</i>Найти тариф</button>
+        </div>
+        <div class="col s12">
+          <table>
+            <thead>
+              <tr>
+                <th>Total</th>
+                <th>Per day/rent</th>
+                <th></th>
+              </tr>
+
+            </thead>
+            <tbody>
+              <tr></tr>
+              <tr></tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="finish" class="row scrollspy">
+        <div class="col s0 m2 l3"></div>
+        <div class="input-field col s12">
+          <button class="waves-effect waves-light btn"><i class="material-icons left">save</i>Сохранить</button>
+        </div>
+        <div class="col s0 m2 l3"></div>
+      </div>
+    </form>
+    <div class="col hide-on-small-only m3 l2">
+      <div class="toc-wrapper pin-top" style="top: 0px;">
+        <div style="height: 1px;">
+          <ul class="table-of-contents">
+            <li><a href="#general" class="active">Основное</a></li>
+            <li><a href="#tenant" class="">Арендатор</a></li>
+            <li><a href="#second-driver">Второй водитель</a></li>
+            <li><a href="#third-driver">Третий водитель</a></li>
+            <li><a href="#rate">Тариф</a></li>
+            <li><a href="#finish">Готово</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

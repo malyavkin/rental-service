@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Contract page</title>
+{% endblock %}
+{% block navbar-left %}
+<span class="breadcrumbs">
+        <a href="{% url 'home' %}" class="breadcrumb">DocXTools</a>
+        <a href="{% url 'contracts' %}" class="breadcrumb">Договоры</a>
+        <a href="{% url 'details' contract.pk %}" class="breadcrumb">{{contract.get_complete_number}}</a>
+    </span>
+{% endblock %}
+{% block body %}
+<div class="container">
+  <h3>Договор № {{contract.get_complete_number}}</h3>
+  <ul class="collection z-depth-1">
+    <li class="collection-item">
+      <div class="labeled-icon">
+        <a href="{% url 'gen_contract' contract.pk %}">
+          <i class="material-icons circle">attachment</i>
+          <span>Договор</span>
+        </a>
+      </div>
+    </li>
+    <li class="collection-item">
+      <div class="labeled-icon">
+        <a href="{% url 'gen_delivery_act' contract.pk %}">
+          <i class="material-icons circle">attachment</i>
+          <span>Акт выдачи</span>
+        </a>
+      </div>
+    </li>
+    <li class="collection-item">
+      <div class="labeled-icon">
+        <a href="{% url 'gen_return_act' contract.pk %}">
+          <i class="material-icons circle">attachment</i>
+          <span>Акт возврата</span>
+        </a>
+      </div>
+    </li>
+    <li class="collection-item">
+      <div class="labeled-icon">
+        <a href="{% url 'gen_airport' contract.pk %}">
+          <i class="material-icons circle">attachment</i>
+          <span>Табличка</span>
+        </a>
+      </div>
+    </li>
+  </ul>
+  <ul class="collapsible" data-collapsible="expandable">
+    <li>
+      <div class="collapsible-header"><i class="material-icons">directions_car</i>Основная информация</div>
+      <div class="collapsible-body">
+        <table class="striped">
+          <tbody>
+            <tr>
+              <td>Договор</td>
+              <td>{{contract.get_complete_number}} от {{contract.contract_date}}</td>
+            </tr>
+            <tr>
+              <td>Автомобиль</td>
+              {% if contract.car_class_equals_booked_class%}
+              <td>{{contract.car.str_with_class}}</td>
+              {% else %}
+              <td>{{contract.car.str_with_class}} (забронирован как {{contract.booked_class}})</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>№ брони</td>
+              <td>{{contract.contract_booking_number}}</td>
+            </tr>
+            <tr>
+              <td>Адрес выдачи</td>
+              <td>{{contract.delivery_address}}</td>
+            </tr>
+            <tr>
+              <td>Территория эксплутации</td>
+              <td>{{contract.area_of_operation}}</td>
+            </tr>
+            <tr>
+              <td>Адрес возврата</td>
+              <td>{{contract.return_address}}</td>
+            </tr>
+            <tr>
+              <td>Начало аренды</td>
+              <td>{{contract.rent_start_date}} в {{contract.rent_start_time}}</td>
+            </tr>
+            <tr>
+              <td>Конец аренды</td>
+              <td>{{contract.rent_end_date}} в {{contract.rent_end_time}}</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+
+      </div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">account_circle</i>Арендатор</div>
+      <div class="collapsible-body">
+        <table class="striped">
+          <tbody>
+            <tr>
+              <td>ФИО</td>
+              <td>{{names.0}}</td>
+            </tr>
+            <tr>
+              <td>Рейс</td>
+              <td>{{contract.flight_no}} (прибытие в {{contract.arrive_time}})</td>
+            </tr>
+            <tr>
+              <td>Паспорт</td>
+              <td>{{passports.0}})</td>
+            </tr>
+            <tr>
+              <td>Дата рождения</td>
+              <td>{{contract.flight_no}} (прибытие в {{contract.arrive_time}})</td>
+            </tr>
+            <tr>
+              <td>Гражданство</td>
+              <td>{{contract.citizenship}}</td>
+            </tr>
+            <tr>
+              <td>Адрес прописки</td>
+              <td>{{contract.tenant_registration_address}}</td>
+            </tr>
+            <tr>
+              <td>Адрес проживания</td>
+              <td>{{contract.tenant_residential_address}}</td>
+            </tr>
+            <tr>
+              <td>Рабочий телефон</td>
+              <td>{{contract.tenant_phone_no_working}}</td>
+            </tr>
+            <tr>
+              <td>Контактный телефон</td>
+              <td>{{contract.tenant_phone_no_contact}}</td>
+            </tr>
+            <tr>
+              <td>email</td>
+              <td><a href="mailto:{{contract.email}}">{{contract.email}}</a></td>
+            </tr>
+            <tr>
+              <td>Водительское удостоверение</td>
+              <td>{{licenses.0}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">looks_two</i>Второй водитель</div>
+      <div class="collapsible-body">
+        <table class="striped">
+          <tbody>
+            <tr>
+              <td>ФИО</td>
+              <td>{{names.1}}</td>
+            </tr>
+            <tr>
+              <td>Паспорт</td>
+              <td>{{passports.1}}</td>
+            </tr>
+
+            <tr>
+              <td>Водительское удостоверение</td>
+              <td>{{licenses.1}}</td>
+            </tr>
+            <tr>
+              <td>Адрес регистрации</td>
+              <td>{{contract.driver2_registration_address}}</td>
+            </tr>
+            <tr>
+              <td>Контактный телефон</td>
+              <td>{{contract.driver2_phone_no_contact}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">looks_3</i>Третий водитель</div>
+      <div class="collapsible-body">
+        <table class="striped">
+          <tbody>
+            <tr>
+              <td>ФИО</td>
+              <td>{{names.2}}</td>
+            </tr>
+            <tr>
+              <td>Паспорт</td>
+              <td>{{passports.2}}</td>
+            </tr>
+
+            <tr>
+              <td>Водительское удостоверение</td>
+              <td>{{licenses.2}}</td>
+            </tr>
+            <tr>
+              <td>Адрес регистрации</td>
+              <td>{{contract.driver3_registration_address}}</td>
+            </tr>
+            <tr>
+              <td>Контактный телефон</td>
+              <td>{{contract.driver3_phone_no_contact}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </li>
+
+  </ul>
+</div>
+{% endblock %}

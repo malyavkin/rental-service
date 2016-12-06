@@ -1,0 +1,8 @@
+.idea/
+RentalService/__pycache__/
+DocXTools/__pycache__/
+media/
+migrations
+DocXTools/docx-templates
+RentalService/settings_prod.py
+RentalService/settings_base.py

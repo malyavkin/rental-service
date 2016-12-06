@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block head %}
+    <title>Home</title>
+{% endblock %}
+{% block navbar-left %}
+    <span class="breadcrumbs">
+        <a href="{% url 'home' %}" class="breadcrumb">DocXTools</a>
+        <a href="{% url 'rate_calc' %}" class="breadcrumb">Калькулятор тарифов</a>
+    </span>
+{% endblock %}
+{% block body %}
+    <div class="container" style="position:relative">
+      <div class="section row">
+        {{form.errors}}
+        <form method="post" action="{% url 'rate_calc' %}">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="input-field col s12">
+              <select name="{{form.branch.name}}">
+                {% if form.branch.value %}
+                <option value="" disabled>Choose your option</option>
+                {% else %}
+                <option value="" disabled selected>Choose your option</option>
+                {% endif %}
+                {% for choice in form.branch.field.queryset %}
+                  {% if choice.pk == form.branch.field.value|add:"0" %}
+                  <option value="{{ choice.pk }}" selected>{{ choice }}</option>
+                  {% else %}
+                  <option value="{{ choice.pk }}">{{ choice }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <label>{{form.branch.label}}</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12 m4 l4">
+              <input type="date"
+                     class="datepicker"
+                     name="{{form.booking_date.name}}"
+                     value="{{form.booking_date.value}}">
+              {{form.booking_date.label_tag}}
+            </div>
+            <div class="input-field col s12 m4 l4">
+              {{form.days}}
+              {{form.days.label_tag}}
+            </div>
+            <div class="input-field col s12 m4 l4">
+              <select name="{{form.car_class.name}}" id="{{form.car_class.name}}">
+                {% if form.car_class.value %}
+                <option value="" disabled>Choose your option</option>
+                {% else %}
+                <option value="" disabled selected>Choose your option</option>
+                {% endif %}
+                {% for car_class in form.car_class.field.queryset %}
+                  {% if car_class.pk == form.car_class.value|add:"0" %}
+                  <option value="{{ car_class.pk }}" selected>{{ car_class }}</option>
+                  {% else %}
+                  <option value="{{ car_class.pk }}">{{ car_class }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <label>{{form.car_class.label}}</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12">
+              <select name="{{form.citizenship.name}}">
+                {% if form.citizenship.value %}
+                <option value="" disabled>Choose your option</option>
+                {% else %}
+                <option value="" disabled selected>Choose your option</option>
+                {% endif %}
+                {% for id, name in form.citizenship.field.choices %}
+                  {% if id == form.citizenship.value %}
+                  <option value="{{ id }}" selected>{{ name }}</option>
+                  {% else %}
+                  <option value="{{ id }}">{{ name }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <label>{{form.citizenship.label}}</label>
+            </div>
+          </div>
+          <div class="input-field row s12">
+            <button class="waves-effect waves-light btn"><i class="material-icons left">search</i>Найти тариф</button>
+          </div>
+        </form>
+        <table class="row s12">
+          <thead>
+            <tr>
+              <th>Total</th>
+              <th>Per day/rent</th>
+              <th>json data</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            {% for rate in data.rates%}
+              <tr>
+                <td>{{ rate.cur }}&nbsp;{{ rate.total|floatformat:2 }}</td>
+                <td>{{ rate.cur }}&nbsp;{{ rate.price|floatformat:2 }}</td>
+                <td><pre>{{ rate.json}}</pre></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+{% endblock %}

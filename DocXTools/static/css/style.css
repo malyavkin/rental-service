@@ -1,0 +1,71 @@
+body {
+    background-color: #fcfcfc;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    margin: 0;
+}
+.secondary-content{
+    margin-left: 1rem;
+}
+#new_contract {
+    position: absolute;
+    right: -28px;
+    top: 15px;
+}
+div#grow {
+  flex-grow:1;
+}
+header{
+    z-index:2;
+}
+.paper-under-header{
+    padding-top: 20px;
+    position: relative;
+    top: -20px;
+    background-color: white;
+}
+input.pseudo-field-50{
+    width: 50px;
+    text-align: center;
+}
+input.pseudo-field-80{
+    width: 80px;
+    text-align: center;
+}
+.inline {
+    display: inline-block;
+}
+.mylabel {
+    height: 3rem;
+    font-size: 1rem;
+    margin: 0 0 20px 0;
+    padding-top: 0.7rem !important;
+}
+.dropdown-button{
+    display: block;
+}
+div.labeled-icon {
+    display: block;
+}
+div.labeled-icon > a{
+    display: block;
+}
+div.labeled-icon .material-icons.circle{
+    font-size: 18px;
+    line-height: 42px;
+    color: #fff;
+    background-color: #2196f3;
+    text-align: center;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+td, th {
+    padding: 15px;
+}

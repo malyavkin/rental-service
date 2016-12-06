@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{% static 'css/style.css' %}"  media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    {% block head %}
+    <title>Title</title>
+    {% endblock %}
+</head>
+<body>
+    <header>
+        <nav class="top-nav blue-grey darken-1 z-depth-2">
+            <div class="nav-wrapper container">
+                {% block navbar-left %}
+                    <a id="logo-container" href="{% url 'home' %}" class="page-title">DocXTools</a>
+                {% endblock %}
+                {% block navbar-right %}
+                    {% if user.is_authenticated %}
+                        <ul class="right">
+                            {% if user.representative%}
+                                <li><a href="{% url 'home' %}">{{user.representative}}</a></li>
+                            {% else %}
+                                <li><a href="{% url 'home' %}">{{user.username}}</a></li>
+                            {% endif %}
+                            {% if user.is_staff%}
+                                <li><a href="{% url 'admin:index' %}"><i class="material-icons">settings</i></a></li>
+                            {% endif %}
+                            <li><a href="{% url 'logout' %}"><i class="material-icons">power_settings_new</i></a></li>
+
+                        </ul>
+                    {% endif %}
+
+                {% endblock %}
+
+            </div>
+        </nav>
+    </header>
+    <main>
+        {% block body %}
+        <h1>Base.html</h1>
+        {% endblock %}
+    </main>
+    <div id="grow"></div>
+    <footer class="page-footer grey darken-2 grey-text text-lighten-4">
+      <div class="container">
+        <div class="row">
+          <div class="col l8 m8 s12">
+            <h5>DoсX Tools</h5>
+            <p>Интерактивная система для хранения документов</p>
+          </div>
+          <div class="col l4 m4 s12">
+              <h5>Links</h5>
+              <ul>
+                  <li>github</li>
+              </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright grey darken-3">
+        <div class="container">
+            <span>© 2016 dfg.rip, All rights reserved.</span>
+            <a class="right grey-text text-lighten-4" href="#!">link</a>
+        </div>
+      </div>
+    </footer>
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/init.js' %}"></script>
+
+</body>
+</html>

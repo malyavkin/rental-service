@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block head %}
+    <title>Login</title>
+{% endblock %}
+{% block navbar-left %}
+    <span class="breadcrumbs">
+        <a href="{% url 'home' %}" class="breadcrumb">DocXTools</a>
+    </span>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row section">
+            <div class="col s0 m2 l3"></div>
+            <div class="col s12 m8 l6">
+                {% if form.errors %}
+                    <p>Your username and password didn't match. Please try again.</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row section">
+            <form method="post" class="col s12" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col s0 m2 l3"></div>
+                    <div class="input-field col s12 m8 l6">
+                        <input type="text" name="{{ form.username.html_name }}" />
+                        {{ form.username.label_tag }}
+                    </div>
+                    <div class="col s0 m2 l3"></div>
+                </div>
+                <div class="row">
+                    <div class="col s0 m2 l3"></div>
+                    <div class="input-field col s12 m8 l6">
+                        <input type="password" name="{{ form.password.html_name }}" />
+                        {{ form.password.label_tag }}
+                    </div>
+                    <div class="col s0 m2 l3"></div>
+                </div>
+                <div class="row">
+                    <div class="col s0 m2 l3"></div>
+                    <div class="input-field col s12 m8 l6">
+                        <button type="submit" class="waves-effect waves-light btn">Login</button>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    </div>
+                    <div class="col s0 m2 l3"></div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
